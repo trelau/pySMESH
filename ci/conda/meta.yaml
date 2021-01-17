@@ -1,0 +1,40 @@
+package:
+  name: pysmesh
+  version: 8.3.0.4
+
+source:
+  path: ../..
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}  # [win]
+    - cmake
+    - ninja
+
+  host:
+    - python
+    - pybind11
+    - occt ==7.4.0
+    - smesh4pyocct ==8.3.0.4
+    - tbb-devel
+
+  run:
+    - python
+    - occt ==7.4.0
+    - smesh4pyocct ==8.3.0.4
+
+test:
+  source_files:
+    - test
+  requires:
+    - pyocct ==7.4.0.0
+
+about:
+  home: https://github.com/trelau/pySMESH
+  license: LGPL2.1
+  license_family: LGPL
+  summary: Python bindings for SMESH
+  description: Python bindings for the Salome Platform SMESH module.
