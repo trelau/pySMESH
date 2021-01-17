@@ -20,11 +20,13 @@ requirements:
     - occt ==7.4.0
     - smesh4pyocct ==8.3.0.4
     - tbb-devel
+    - boost-cpp ==1.73.0
 
   run:
     - python
     - occt ==7.4.0
     - smesh4pyocct ==8.3.0.4
+    - boost-cpp ==1.73.0
 
 test:
   source_files:

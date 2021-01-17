@@ -23,9 +23,6 @@ project(pySMESH VERSION 8.3.0.3 LANGUAGES CXX)
 # --------------------------------------------------------------------------- #
 # OPTIONS
 # --------------------------------------------------------------------------- #
-option(ENABLE_SMESH "Enable SMESH" ON)
-option(ENABLE_NETGEN "Enable Netgen" ON)
-option(ENABLE_VTK "Enable VTK" OFF)
 option(ENABLE_WARNINGS "Disable warning output." OFF)
 
 # --------------------------------------------------------------------------- #
@@ -129,67 +126,63 @@ include_directories(${VTK_INCLUDE_DIRS})
 # SMESH
 # --------------------------------------------------------------------------- #
 set(SMESH_ABS_LIBS)
-if(ENABLE_SMESH)
+message(STATUS "Searching for SMESH...")
+find_package(SMESH REQUIRED)
 
-    add_definitions(-DBUILD_SMESH)
+message(STATUS "SMESH include directory: ${SMESH_INCLUDE_PATH}")
+message(STATUS "SMESH library directory: ${SMESH_LIB_PATH}")
+include_directories(${SMESH_INCLUDE_PATH})
+link_directories(${SMESH_LIB_PATH})
 
-    message(STATUS "Searching for SMESH...")
-    find_package(SMESH REQUIRED)
+# Build full library paths since they have the same name as the Python
+# libraries
+foreach(LIB ${SMESH_LIBRARIES})
+    set(FOUND_LIB "FOUND_LIB-NOTFOUND")
+    find_library(FOUND_LIB ${LIB} PATHS ${SMESH_LIB_PATH})
+    list(APPEND SMESH_ABS_LIBS ${FOUND_LIB})
+endforeach(LIB)
+unset(FOUND_LIB CACHE)
 
-    message(STATUS "SMESH include directory: ${SMESH_INCLUDE_PATH}")
-    message(STATUS "SMESH library directory: ${SMESH_LIB_PATH}")
-    include_directories(${SMESH_INCLUDE_PATH})
-    link_directories(${SMESH_LIB_PATH})
+# ----------------------------------------------------------------------- #
+# BOOST
+# ----------------------------------------------------------------------- #
+message(STATUS "Searching for Boost...")
+find_package(Boost REQUIRED COMPONENTS filesystem thread serialization)
 
-    # Build full library paths since they have the same name as the Python
-    # libraries
-    foreach(LIB ${SMESH_LIBRARIES})
-        set(FOUND_LIB "FOUND_LIB-NOTFOUND")
-        find_library(FOUND_LIB ${LIB} PATHS ${SMESH_LIB_PATH})
-        list(APPEND SMESH_ABS_LIBS ${FOUND_LIB})
-    endforeach(LIB)
-    unset(FOUND_LIB CACHE)
+if(MSVC)
+  # Find the shared boost libs
+  add_definitions(-DBOOST_ALL_DYN_LINK)
+  # Set postfix for debug libs
+  if(NOT CMAKE_DEBUG_POSTFIX)
+      set(CMAKE_DEBUG_POSTFIX d)
+  endif()
+endif()
 
-    # ----------------------------------------------------------------------- #
-    # BOOST
-    # ----------------------------------------------------------------------- #
-    if(MSVC)
-        # Find the shared boost libs
-        set(Boost_USE_STATIC_LIBS OFF)
-        add_definitions(-DBOOST_ALL_DYN_LINK)
-    endif()
+message(STATUS "Boost include directory: ${Boost_INCLUDE_DIR}")
+message(STATUS "Boost libraires: ${Boost_LIBRARIES}")
+include_directories(${Boost_INCLUDE_DIR})
 
-    message(STATUS "Searching for Boost...")
-    find_package(Boost REQUIRED COMPONENTS filesystem thread serialization)
+# ----------------------------------------------------------------------- #
+# PTHREAD
+# ----------------------------------------------------------------------- #
+set(PTHREAD_INCLUDE_DIRS "" CACHE PATH "pthread include directory.")
 
-    # message(STATUS "Boost include directory: ${Boost_INCLUDE_DIR}")
-    # include_directories(${Boost_INCLUDE_DIR})
+if(NOT EXISTS ${PTHREAD_INCLUDE_DIRS})
+    message(FATAL_ERROR "pthread include directory is required.")
+endif()
 
-    # ----------------------------------------------------------------------- #
-    # PTHREAD
-    # ----------------------------------------------------------------------- #
-    set(PTHREAD_INCLUDE_DIRS "" CACHE PATH "pthread include directory.")
-
-    if(NOT EXISTS ${PTHREAD_INCLUDE_DIRS})
-        message(FATAL_ERROR "pthread include directory is required.")
-    endif()
-
-    message(STATUS "pthread include directory: ${PTHREAD_INCLUDE_DIRS}")
-    include_directories(${PTHREAD_INCLUDE_DIRS})
+message(STATUS "pthread include directory: ${PTHREAD_INCLUDE_DIRS}")
+include_directories(${PTHREAD_INCLUDE_DIRS})
 
 
-    # ----------------------------------------------------------------------- #
-    # NETGEN
-    # ----------------------------------------------------------------------- #
-    if(ENABLE_NETGEN AND ENABLE_SMESH)
-        message(STATUS "Searching for Netgen...")
-        find_package(Netgen REQUIRED)
+# ----------------------------------------------------------------------- #
+# NETGEN
+# ----------------------------------------------------------------------- #
+message(STATUS "Searching for Netgen...")
+find_package(Netgen REQUIRED)
 
-        message(STATUS "Netgen include directory: ${NETGEN_INCLUDE_DIR}")
-        include_directories(${NETGEN_INCLUDE_DIR})
-    endif()
-
-endif(ENABLE_SMESH)
+message(STATUS "Netgen include directory: ${NETGEN_INCLUDE_DIR}")
+include_directories(${NETGEN_INCLUDE_DIR})
 
 
 # --------------------------------------------------------------------------- #
@@ -211,17 +204,12 @@ foreach(SRC ${SMESH_SRCS})
     # Get module name
     get_filename_component(MOD ${SRC} NAME_WE)
 
-    # Check Netgen
-    if(NOT ENABLE_NETGEN AND ${MOD} STREQUAL "NETGENPlugin")
-        message(STATUS "Skipping ${MOD}")
-        continue()
-    endif()
-
     # Add pybind11 module
     pybind11_add_module(${MOD} ${SRC})
     target_link_libraries(${MOD} PUBLIC ${OpenCASCADE_LIBRARIES}
                                          ${PYTHON_LIBRARIES}
-                                         ${SMESH_ABS_LIBS})
+                                         ${SMESH_ABS_LIBS}
+                                         ${Boost_LIBRARIES})
     set_target_properties(${MOD} PROPERTIES SUFFIX ${EXTENSION} COMPILE_FLAGS ${WARNINGS})
     target_include_directories(${MOD} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
     install(FILES ${OUTPUT_PATH}/${MOD}${EXTENSION}
