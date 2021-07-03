@@ -24,7 +24,7 @@ requirements:
 
   run:
     - python
-    - pyocct ==7.4.0
+    - occt ==7.4.0
     - smesh4pyocct ==8.3.0.4
     - boost-cpp ==1.73.0
 
