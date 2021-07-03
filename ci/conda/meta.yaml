@@ -24,15 +24,13 @@ requirements:
 
   run:
     - python
-    - occt ==7.4.0
+    - pyocct ==7.4.0
     - smesh4pyocct ==8.3.0.4
     - boost-cpp ==1.73.0
 
 test:
   source_files:
     - test
-  requires:
-    - pyocct ==7.4.0.0
 
 about:
   home: https://github.com/trelau/pySMESH
