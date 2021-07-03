@@ -31,6 +31,8 @@ requirements:
 test:
   source_files:
     - test
+  requires:
+    - pyocct ==7.4.0.0
 
 about:
   home: https://github.com/trelau/pySMESH
