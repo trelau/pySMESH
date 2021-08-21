@@ -60,7 +60,34 @@ def gen_occt_includes(occt_include_path):
     return occt_mods, all_includes
 
 
-def gen_includes(smesh_include_path, occt_include_path, output_path):
+def gen_netgen_includes(netgen_include_path):
+    all_includes = []
+
+    # Header files to ignore
+    ignored_includes = []
+
+    headers = ['.hpp']
+
+    include_dirs = []
+
+    for item in os.listdir(netgen_include_path):
+        path = os.path.join(netgen_include_path, item)
+        _, ext = os.path.splitext(item)
+        if os.path.isdir(path):
+            include_dirs.append(path)
+            for item in os.listdir(path):
+                _, ext = os.path.splitext(item)
+                if ext in headers and item not in ignored_includes:
+                    all_includes.append(item)
+        elif ext in headers and item not in ignored_includes:
+            all_includes.append(item)
+    assert all_includes, "Netgen path is invalid"
+    netgen_mods = ['OCCGeometry', 'Mesh']
+    return netgen_mods, include_dirs, all_includes
+
+
+def gen_includes(smesh_include_path, netgen_include_path,
+                 occt_include_path, output_path):
     """
     Generate the "all_includes.h" header file for parsing the headers.
 
@@ -103,8 +130,13 @@ def gen_includes(smesh_include_path, occt_include_path, output_path):
     smesh_mods = list(smesh_mods)
     smesh_mods.sort(key=str.lower)
 
+    # Build all includes so clang can figure out imports
     occt_mods, occt_includes = gen_occt_includes(occt_include_path)
     all_includes.extend(occt_includes)
+
+    netgen_mods, netgen_include_dirs, netgen_includes = gen_netgen_includes(netgen_include_path)
+    all_includes.extend(netgen_includes)
+    include_dirs.extend(netgen_include_dirs)
 
     # Sort ignoring case
     all_includes.sort(key=str.lower)
@@ -118,7 +150,7 @@ def gen_includes(smesh_include_path, occt_include_path, output_path):
         for header in all_includes:
             fout.write('#include <{}>\n'.format(header))
 
-    return smesh_mods, occt_mods, include_dirs, all_includes
+    return smesh_mods, netgen_mods, occt_mods, include_dirs, all_includes
 
 
 def main():
@@ -197,12 +229,13 @@ def main():
     # Gather all the includes for the parser
     other_includes = [i for i in [smesh_include_path, occt_include_path, vtk_include_path, tbb_include_path, clang_include_path] if i]
 
+
     # Add extra includes for missing OCCT headers that cause issues during parsing
     other_includes.append(os.path.join(BINDER_ROOT, 'extra_includes'))
 
     print('\nGenerating all_includes.h file...')
-    smesh_mods, occt_mods, include_dirs, all_includes = gen_includes(
-        smesh_include_path, occt_include_path, BINDER_ROOT)
+    smesh_mods, netgen_mods, occt_mods, include_dirs, all_includes = gen_includes(
+        smesh_include_path, netgen_include_path, occt_include_path, BINDER_ROOT)
     other_includes.extend(include_dirs)
 
     # Initialize the main binding generation tool
@@ -211,6 +244,7 @@ def main():
         namespace={
             'OCCT': occt_mods,
             'SMESH': smesh_mods,
+            'netgen': netgen_mods,
         },
         all_includes=all_includes,
         main_includes=other_includes

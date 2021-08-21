@@ -16,6 +16,17 @@
 
 # Immutable types -------------------------------------------------------------
 
+# Excluded modules ------------------------------------------------------------
+-module adfront2
+-module adfront3
+-module autodiff
+-module bisect
+-module classifyhpel
+-module clusters
+-module findip
+-module nglib
+-module nginterface
+
 # Excluded classes ------------------------------------------------------------
 -class ORB_INIT
 
@@ -26,6 +37,22 @@
 -class Utils_Mutex
 -class Utils_Locker
 -class Utils_Timer
+
+# Undefined typedef? FIXME
+-class NETGENPlugin_Remesher_2D
+
+-class NETGENPlugin_Hypothesis_i
+-class NETGENPlugin_Hypothesis_2D_i
+-class NETGENPlugin_Hypothesis_2D_ONLY_i
+-class NETGENPlugin_Hypothesis_3D_i
+-class NETGENPlugin_NETGEN_2D3D_i
+-class NETGENPlugin_NETGEN_2D_i
+-class NETGENPlugin_NETGEN_2D_ONLY_i
+-class NETGENPlugin_NETGEN_3D_i
+-class NETGENPlugin_SimpleHypothesis_2D_i
+-class NETGENPlugin_SimpleHypothesis_3D_i
+-class NETGENPlugin_Remesher_2D_i
+-class NETGENPlugin_RemesherHypothesis_2D_i
 
 # Excluded typedefs -----------------------------------------------------------
 
@@ -79,11 +106,30 @@
 
 -function StdMeshers_ShapeShapeBiDirectionMap::operator()
 
+
+-function NETGENPlugin_NetgenLibWrapper::_ngMesh
+-function NETGENPlugin_NetgenLibWrapper::setMesh
+-function NETGENPlugin_Mesher::SetSelfPointer
+
 # Headers ---------------------------------------------------------------------
 +header SMESH: bind_NCollection_Sequence.hxx
 +header SMESHDS: bind_NCollection_DataMap.hxx
 +header StdMeshers: bind_NCollection_IndexedMap.hxx
 +header StdMeshers: SMESH_Group.hxx
+
++header NETGENPlugin: pySMESH_ng.hxx
++header NETGENPlugin: SMESH_subMesh.hxx
+
+-header NETGENPlugin: NETGENPlugin_Hypothesis_i.hxx
+-header NETGENPlugin: NETGENPlugin_Hypothesis_2D_i.hxx
+-header NETGENPlugin: NETGENPlugin_Hypothesis_2D_ONLY_i.hxx
+-header NETGENPlugin: NETGENPlugin_Hypothesis_3D_i.hxx
+-header NETGENPlugin: NETGENPlugin_NETGEN_2D3D_i.hxx
+-header NETGENPlugin: NETGENPlugin_NETGEN_2D_i.hxx
+-header NETGENPlugin: NETGENPlugin_NETGEN_2D_ONLY_i.hxx
+-header NETGENPlugin: NETGENPlugin_NETGEN_3D_i.hxx
+-header NETGENPlugin: NETGENPlugin_SimpleHypothesis_2D_i.hxx
+-header NETGENPlugin: NETGENPlugin_SimpleHypothesis_3D_i.hxx
 
 # Python names ----------------------------------------------------------------
 
@@ -92,6 +138,7 @@
 # Excluded base classes -------------------------------------------------------
 
 # Excluded fields -------------------------------------------------------------
+-field NETGENPlugin_NetgenLibWrapper::_ngMesh
 
 # Excluded imports ------------------------------------------------------------
 

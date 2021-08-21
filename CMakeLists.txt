@@ -132,7 +132,6 @@ set(SMESH_ABS_LIBS)
 message(STATUS "Searching for SMESH...")
 find_package(SMESH 9.6.0 REQUIRED)
 
-
 if(NOT EXISTS ${SMESH_INCLUDE_PATH})
     message(FATAL_ERROR "Failed to find SMESH include directory.")
 endif()
@@ -215,6 +214,8 @@ find_package(Netgen REQUIRED)
 message(STATUS "Netgen include directory: ${NETGEN_INCLUDE_DIR}")
 include_directories(${NETGEN_INCLUDE_DIR})
 
+set(Netgen_LIBRARIES "nglib4smesh")
+
 # --------------------------------------------------------------------------- #
 # pyOCCT
 # --------------------------------------------------------------------------- #
@@ -247,11 +248,13 @@ foreach(SRC ${SMESH_SRCS})
     target_link_libraries(py${MOD} PUBLIC ${OpenCASCADE_LIBRARIES}
                                          ${PYTHON_LIBRARIES}
                                          ${SMESH_ABS_LIBS}
+                                         ${Netgen_LIBRARIES}
                                          ${OmniORB4_LIBS}
                                          ${Boost_LIBRARIES})
     set_target_properties(py${MOD} PROPERTIES SUFFIX ${EXTENSION} COMPILE_FLAGS ${WARNINGS})
     target_include_directories(py${MOD} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    install(FILES ${OUTPUT_PATH}/${MOD}${EXTENSION}
+    install(FILES ${OUTPUT_PATH}/py${MOD}${EXTENSION}
+            RENAME ${MOD}${EXTENSION}
             DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/SMESH)
 
 
