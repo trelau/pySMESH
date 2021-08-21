@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='SMESH',
-    version='8.3.0.4',
+    version='9.6.0.0',
     packages=['SMESH', 'SMESH.Visualization'],
     package_data={'SMESH': ['*.so', '*.pyd', '*.dll', 'Visualization/_resources/*']},
     author='Trevor Laughlin',

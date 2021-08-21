@@ -89,3 +89,10 @@ ENV/
 
 # Spyder project settings
 .spyderproject
+
+# Kdevelop
+.kdev4/
+*.kdev4
+
+# pybinder
+log.txt

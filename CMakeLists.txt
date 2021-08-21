@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 cmake_minimum_required(VERSION 3.10)
-project(pySMESH VERSION 8.3.0.3 LANGUAGES CXX)
+project(pySMESH VERSION 9.6.0 LANGUAGES CXX)
 
 
 # --------------------------------------------------------------------------- #
@@ -28,10 +28,10 @@ option(ENABLE_WARNINGS "Disable warning output." OFF)
 # --------------------------------------------------------------------------- #
 # SETTINGS
 # --------------------------------------------------------------------------- #
-set(pySMESH_MAJOR_VERSION 8)
-set(pySMESH_MINOR_VERSION 3)
+set(pySMESH_MAJOR_VERSION 9)
+set(pySMESH_MINOR_VERSION 6)
 set(pySMESH_PATCH_VERSION 0)
-set(pySMESH_TWEAK_VERSION 3)
+set(pySMESH_TWEAK_VERSION 0)
 
 if(WIN32)
     set(EXTENSION ".pyd")
@@ -95,7 +95,7 @@ include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(inc)
 if(NOT DEFINED OpenCASCADE_INCLUDE_DIR OR NOT DEFINED OpenCASCADE_LIBRARY_DIR)
     message(STATUS "Searching for OpenCASCADE...")
-    find_package(OpenCASCADE 7.4.0 REQUIRED)
+    find_package(OpenCASCADE 7.5.2 REQUIRED)
 endif()
 
 if(NOT EXISTS ${OpenCASCADE_INCLUDE_DIR})
@@ -111,10 +111,13 @@ message(STATUS "OpenCASCADE library directory: ${OpenCASCADE_LIBRARY_DIR}")
 include_directories(${OpenCASCADE_INCLUDE_DIR})
 link_directories(${OpenCASCADE_LIBRARY_DIR})
 
-
 # ----------------------------------------------------------------------- #
 # VTK
 # ----------------------------------------------------------------------- #
+
+# cmake bundles a vtk patch for hdf5 that requires C
+enable_language(C)
+
 message(STATUS "Searching for VTK...")
 find_package(VTK REQUIRED)
 
@@ -127,21 +130,43 @@ include_directories(${VTK_INCLUDE_DIRS})
 # --------------------------------------------------------------------------- #
 set(SMESH_ABS_LIBS)
 message(STATUS "Searching for SMESH...")
-find_package(SMESH REQUIRED)
+find_package(SMESH 9.6.0 REQUIRED)
 
+
+if(NOT EXISTS ${SMESH_INCLUDE_PATH})
+    message(FATAL_ERROR "Failed to find SMESH include directory.")
+endif()
+
+if(NOT EXISTS ${SMESH_LIB_PATH})
+    message(FATAL_ERROR "Failed to find SMESH library directory.")
+endif()
 message(STATUS "SMESH include directory: ${SMESH_INCLUDE_PATH}")
 message(STATUS "SMESH library directory: ${SMESH_LIB_PATH}")
 include_directories(${SMESH_INCLUDE_PATH})
 link_directories(${SMESH_LIB_PATH})
 
+# Include each subdir
+FILE(GLOB SMESH_INCLUDE_SUBDIRS RELATIVE ${SMESH_INCLUDE_PATH} ${SMESH_INCLUDE_PATH}/*)
+foreach(SUBDIR ${SMESH_INCLUDE_SUBDIRS})
+    message(STATUS "SMESH include ${SMESH_INCLUDE_PATH}/${SUBDIR}")
+    include_directories("${SMESH_INCLUDE_PATH}/${SUBDIR}")
+endforeach(SUBDIR)
+
 # Build full library paths since they have the same name as the Python
 # libraries
+
+# Needed for trace collector
+list(APPEND SMESH_LIBRARIES "Kernel")
+
 foreach(LIB ${SMESH_LIBRARIES})
-    set(FOUND_LIB "FOUND_LIB-NOTFOUND")
+    message(STATUS "SMESH library: ${LIB}")
+    set(FOUND_LIB "${LIB}-NOTFOUND")
     find_library(FOUND_LIB ${LIB} PATHS ${SMESH_LIB_PATH})
+    message(STATUS "SMESH found library: ${FOUND_LIB}")
     list(APPEND SMESH_ABS_LIBS ${FOUND_LIB})
 endforeach(LIB)
 unset(FOUND_LIB CACHE)
+message(STATUS "SMESH libs: ${SMESH_ABS_LIBS}")
 
 # ----------------------------------------------------------------------- #
 # BOOST
@@ -163,16 +188,22 @@ message(STATUS "Boost libraires: ${Boost_LIBRARIES}")
 include_directories(${Boost_INCLUDE_DIR})
 
 # ----------------------------------------------------------------------- #
+# OmniORB
+# ----------------------------------------------------------------------- #
+set(OmniORB4_LIBS "omniORB4" "omnithread")
+
+# ----------------------------------------------------------------------- #
 # PTHREAD
 # ----------------------------------------------------------------------- #
-set(PTHREAD_INCLUDE_DIRS "" CACHE PATH "pthread include directory.")
+find_package(Threads REQUIRED)
+#set(PTHREAD_INCLUDE_DIRS "" CACHE PATH "pthread include directory.")
 
-if(NOT EXISTS ${PTHREAD_INCLUDE_DIRS})
+if(NOT Threads_FOUND)
     message(FATAL_ERROR "pthread include directory is required.")
 endif()
 
-message(STATUS "pthread include directory: ${PTHREAD_INCLUDE_DIRS}")
-include_directories(${PTHREAD_INCLUDE_DIRS})
+#message(STATUS "pthread include directory: ${PTHREAD_INCLUDE_DIRS}")
+#include_directories(${PTHREAD_INCLUDE_DIRS})
 
 
 # ----------------------------------------------------------------------- #
@@ -184,6 +215,11 @@ find_package(Netgen REQUIRED)
 message(STATUS "Netgen include directory: ${NETGEN_INCLUDE_DIR}")
 include_directories(${NETGEN_INCLUDE_DIR})
 
+# --------------------------------------------------------------------------- #
+# pyOCCT
+# --------------------------------------------------------------------------- #
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../pyOCCT/inc/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../pyOCCT/src/)
 
 # --------------------------------------------------------------------------- #
 # pySMESH
@@ -199,26 +235,30 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${OUTPUT_PATH}")
 # Treat each .cxx file in src/modules as a module
 file(GLOB SMESH_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx)
 
+# SMESH modules
 foreach(SRC ${SMESH_SRCS})
 
     # Get module name
     get_filename_component(MOD ${SRC} NAME_WE)
 
     # Add pybind11 module
-    pybind11_add_module(${MOD} ${SRC})
-    target_link_libraries(${MOD} PUBLIC ${OpenCASCADE_LIBRARIES}
+    pybind11_add_module(py${MOD} ${SRC})
+
+    target_link_libraries(py${MOD} PUBLIC ${OpenCASCADE_LIBRARIES}
                                          ${PYTHON_LIBRARIES}
                                          ${SMESH_ABS_LIBS}
+                                         ${OmniORB4_LIBS}
                                          ${Boost_LIBRARIES})
-    set_target_properties(${MOD} PROPERTIES SUFFIX ${EXTENSION} COMPILE_FLAGS ${WARNINGS})
-    target_include_directories(${MOD} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    set_target_properties(py${MOD} PROPERTIES SUFFIX ${EXTENSION} COMPILE_FLAGS ${WARNINGS})
+    target_include_directories(py${MOD} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
     install(FILES ${OUTPUT_PATH}/${MOD}${EXTENSION}
             DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/SMESH)
+
 
     # Special hack for handling static member variables causing link errors
     # with pybind11
     if(MSVC AND ${MOD} STREQUAL "SMESHDS")
-        set_property(TARGET ${MOD} APPEND_STRING PROPERTY LINK_FLAGS " /FORCE")
+        set_property(TARGET py${MOD} APPEND_STRING PROPERTY LINK_FLAGS " /FORCE")
     endif()
 
 endforeach()

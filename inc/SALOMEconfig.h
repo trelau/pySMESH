@@ -18,24 +18,6 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef __ObjectPool_Templates_Header__
-#define __ObjectPool_Templates_Header__
+#pragma once
 
-#include <pySMESH_Common.hxx>
-
-#include <ObjectPool.hxx>
-
-// C:\Users\Trevor\Work\Products\SMESH\install\include\smesh\ObjectPool.hxx
-template <typename X>
-void bind_ObjectPool(py::object &mod, std::string const &name) {
-
-	// C:\Users\Trevor\Work\Products\SMESH\install\include\smesh\ObjectPool.hxx
-	py::class_<ObjectPool<X>, std::unique_ptr<ObjectPool<X>, Deleter<ObjectPool<X>>>> cls(mod, name.c_str(), "None");
-	cls.def(py::init<int>(), py::arg("nblk"));
-	cls.def("getNew", (X * (ObjectPool<X>::*)()) &ObjectPool<X>::getNew, "None");
-	cls.def("destroy", (void (ObjectPool<X>::*)(X *)) &ObjectPool<X>::destroy, "None", py::arg("obj"));
-	cls.def("clear", (void (ObjectPool<X>::*)()) &ObjectPool<X>::clear, "None");
-
-};
-
-#endif
+// Dummy file to make compiler happy :)

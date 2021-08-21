@@ -1,0 +1,12 @@
+name: binder
+channels:
+  - conda-forge
+dependencies:
+  - python=3.7
+  - clangdev
+  - python-clang
+  - occt=7.5.2
+  - netgen ==6.2.2006
+  - smesh ==9.6.0
+  - omniorb
+  - tbb-devel

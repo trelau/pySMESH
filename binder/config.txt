@@ -1,0 +1,126 @@
+# Include directories ---------------------------------------------------------
+
+# Clang compiler arguments ----------------------------------------------------
++arg any: -x
++arg any: c++
++arg any: -std=c++17
++arg any: -D__CODE_GENERATOR__
++arg any: -Wno-deprecated-declarations
++arg any: -ferror-limit=0
++arg win32: -fms-compatibility
++arg win32: -fms-extensions
++arg win32: -fms-compatibility-version=19
++arg win32: -fdelayed-template-parsing
++arg linux: -D_INC_WINDOWS
++arg linux: -D__WINDOWS_H_INCLUDED
+
+# Immutable types -------------------------------------------------------------
+
+# Excluded classes ------------------------------------------------------------
+-class ORB_INIT
+
+-class SALOME_Exception
+-class DESTRUCTEUR_GENERIQUE_
+-class CommException
+-class Identity
+-class Utils_Mutex
+-class Utils_Locker
+-class Utils_Timer
+
+# Excluded typedefs -----------------------------------------------------------
+
+# Excluded functions ----------------------------------------------------------
+-function* operator new_
+-function* operator delete_
+-function* operator new[]_
+-function* operator delete[]_
+-function* operator=
+-function* operator->
+-function* begin
+-function* end
+-function* cbegin
+-function* cend
+
+-function SMDS_MeshCell::toVtkOrder_
+-function SMDS_MeshCell::fromVtkOrder_
+-function SMDS_CellLinks::BuildLinks
+
+# TODO: Cannot handle ptr to ptr return type/params?
+-function SMDS_VolumeTool::IsFreeFace
+-function SMDS_VolumeTool::IsFreeFaceAdv
+-function SMDS_VolumeTool::GetFaceNodes
+-function SMDS_VolumeTool::GetNodes
+
+-function StdMeshers_RenumberHelper::AddReplacingNode
+-function StdMeshers_Import_1D::getMaps_
+
+# Abstract
+-function SMDS_PolygonalFaceOfNodes::SMDS_PolygonalFaceOfNodes(const int &)
+-function StdMeshers_Reversible1D::StdMeshers_Reversible1D(int, SMESH_Gen *)
+
+-function SMESH_Quadtree::SMESH_Quadtree()
+-function SMESH_Quadtree::SMESH_Quadtree(SMESH_TreeLimit *)
+-function SMESH_Octree::SMESH_Octree(SMESH_TreeLimit *)
+
+-function SMESH_ProxyMesh::SMESH_ProxyMesh(int &)
+-function SMESH_0D_Algo::SMESH_0D_Algo(int, SMESH_Gen *)
+-function SMESH_1D_Algo::SMESH_1D_Algo(int, SMESH_Gen *)
+-function SMESH_2D_Algo::SMESH_2D_Algo(int, SMESH_Gen *)
+-function SMESH_3D_Algo::SMESH_3D_Algo(int, SMESH_Gen *)
+
+-function SMESH_MeshEditor::Transform
+-function SMESH_MeshEditor::Offset
+-function SMESH_Pattern::GetInOutNodes
+
+-function SMESH_subMesh::DependsOn()
+
+-function StdMeshers_FaceSide::StdMeshers_FaceSide(const TopoDS_Face &, const int &, SMESH_Mesh *, const bool, const bool, SMESH_MesherHelper *)
+-function StdMeshers_FaceSide::StdMeshers_FaceSide(const TopoDS_Face &, const int &, SMESH_Mesh *, const bool, const bool, SMESH_MesherHelper *, SMESH_ProxyMesh::Ptr)
+
+-function StdMeshers_ShapeShapeBiDirectionMap::operator()
+
+# Headers ---------------------------------------------------------------------
++header SMESH: bind_NCollection_Sequence.hxx
++header SMESHDS: bind_NCollection_DataMap.hxx
++header StdMeshers: bind_NCollection_IndexedMap.hxx
++header StdMeshers: SMESH_Group.hxx
+
+# Python names ----------------------------------------------------------------
+
+# nodelete option -------------------------------------------------------------
+
+# Excluded base classes -------------------------------------------------------
+
+# Excluded fields -------------------------------------------------------------
+
+# Excluded imports ------------------------------------------------------------
+
+# Import guards ---------------------------------------------------------------
+
+# Call guards -----------------------------------------------------------------
+
+# Nested classes --------------------------------------------------------------
+
+# Classes that need downcasted  -----------------------------------------------
+
+# Skipped types ---------------------------------------------------------------
+
+# Manual text -----------------------------------------------------------------
+
+# Extra text ------------------------------------------------------------------
++before_type Unexpect-->py::register_exception<SALOME_Exception>(mod, "PySALOME_Exception");
+
+# Patches -----------------------------------------------------------------
++patch DriverUNV: bind_std::map<SMDS_MeshGroup *, std::basic_string<char>>-->py::bind_map<std::map<SMDS_MeshGroup *, std::basic_string<char>>>
++patch DriverUNV: bind_std::list<SMESHDS_GroupBase *>-->// fixme // py::bind_vector<std::list<SMESHDS_GroupBase *>>
+
++patch SMDS: bind_boost::shared_ptr-->// fixme // bind_boost::shared_ptr
++patch SMDS: cls_ElemByNodesType.def_readwrite-->// fixme // cls_ElemByNodesType.def_readwrite
++patch SMDS: cls_ListElemByNodesType.def_readwrite-->// fixme // cls_ListElemByNodesType.def_readwrite
++patch SMDS: py::class_<> cls_ElemByNodesType-->py::class_<std::unique_ptr<ElemByNodesType, Deleter<ElemByNodesType>>> cls_ElemByNodesType
++patch SMDS: py::class_<> cls_ListElemByNodesType-->py::class_<std::unique_ptr<ListElemByNodesType, Deleter<ListElemByNodesType>>> cls_ListElemByNodesType
+
++patch SMESH: bind_boost::shared_ptr-->// fixme // bind_boost::shared_ptr
++patch SMESH: bind_std::pair-->// fixme // bind_std::pair
++patch SMESHDS: bind_boost::shared_ptr-->// fixme // bind_boost::shared_ptr
++patch StdMeshers: bind_boost::shared_ptr-->// fixme // bind_boost::shared_ptr

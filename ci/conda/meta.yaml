@@ -1,6 +1,6 @@
 package:
   name: pysmesh
-  version: 8.3.0.4
+  version: 9.6.0
 
 source:
   path: ../..
@@ -17,22 +17,26 @@ requirements:
   host:
     - python
     - pybind11
-    - occt ==7.4.0
-    - smesh4pyocct ==8.3.0.4
+    - occt ==7.5.2
+    - smesh ==9.6.0
+    - netgen ==6.2.2006
     - tbb-devel
-    - boost-cpp ==1.73.0
+    - boost-cpp ==1.77.0
+    - omniorb
 
   run:
     - python
-    - occt ==7.4.0
-    - smesh4pyocct ==8.3.0.4
-    - boost-cpp ==1.73.0
+    - occt ==7.5.2
+    - netgen ==6.2.2006
+    - smesh ==9.6.0
+    - boost-cpp ==1.77.0
+    - omniorb
 
 test:
   source_files:
     - test
   requires:
-    - pyocct ==7.4.0.0
+    - pyocct ==7.5.2
 
 about:
   home: https://github.com/trelau/pySMESH
