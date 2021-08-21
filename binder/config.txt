@@ -38,6 +38,12 @@
 -class Utils_Locker
 -class Utils_Timer
 
+-class SMESH_Comment
+
+# VTK stuff needed
+-class SMDS_CellLinks
+-class SMDS_UnstructuredGrid
+
 # Undefined typedef? FIXME
 -class NETGENPlugin_Remesher_2D
 
@@ -113,7 +119,16 @@
 
 # Headers ---------------------------------------------------------------------
 +header SMESH: bind_NCollection_Sequence.hxx
+
 +header SMESHDS: bind_NCollection_DataMap.hxx
+
++header SMDS: vtkType.h
++header SMDS: vtkCellLinks.h
++header SMDS: vtkCellType.h
++header SMDS: vtkDataSet.h
++header SMDS: vtkUnstructuredGrid.h
++header SMDS: vtkPoints.h
+
 +header StdMeshers: bind_NCollection_IndexedMap.hxx
 +header StdMeshers: SMESH_Group.hxx
 
@@ -141,8 +156,14 @@
 -field NETGENPlugin_NetgenLibWrapper::_ngMesh
 
 # Excluded imports ------------------------------------------------------------
+-import SMDS: SMESHDS
+-import SMESH: StdMeshers
+
+# Wtf??
+-import NETGENPlugin: meshclass
 
 # Import guards ---------------------------------------------------------------
++iguard SMESHDS: SMESH
 
 # Call guards -----------------------------------------------------------------
 
@@ -156,6 +177,10 @@
 
 # Extra text ------------------------------------------------------------------
 +before_type Unexpect-->py::register_exception<SALOME_Exception>(mod, "PySALOME_Exception");
+
+# HACK: Workaround EventListener duplicated.. Why is EventListner jacked up??
++after_type SMESH_MesherHelper-->/*
++before_type SMESH_subMesh-->*/
 
 # Patches -----------------------------------------------------------------
 +patch DriverUNV: bind_std::map<SMDS_MeshGroup *, std::basic_string<char>>-->py::bind_map<std::map<SMDS_MeshGroup *, std::basic_string<char>>>
