@@ -1,0 +1,3 @@
+[submodule "binder/pyOCCT_binder"]
+	path = binder/pyOCCT_binder
+	url = https://github.com/frmdstryr/pyOCCT_binder@smesh-support
