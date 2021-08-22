@@ -51,6 +51,7 @@ jobs:
         shell: pwsh
         run: |
           conda activate binder
+          python pyOCCT/binder/run.py -c pyOCCT/binder/config.txt -o pyOCCT/src
           python binder/run.py -c binder/config.txt -o src
 
       - name: "Upload bindings"
@@ -95,6 +96,7 @@ jobs:
         shell: bash -l {0}
         run: |
           conda activate binder
+          python pyOCCT/binder/run.py -c pyOCCT/binder/config.txt -o pyOCCT/src
           python binder/run.py -c binder/config.txt -o src
 
       - name: "Upload bindings"
