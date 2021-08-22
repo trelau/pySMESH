@@ -10,6 +10,98 @@ on:
     types: [published]
 
 jobs:
+  generate_linux:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    name: Generate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest']
+    steps:
+
+      - name: "Install OpenGL"
+        run: |
+          sudo apt-get update
+          sudo apt-get -q -y install libglu1-mesa-dev libgl1-mesa-dev libxi-dev libglfw3-dev libgles2-mesa-dev
+
+      - name: "Prepare VM"
+        run: |
+          sudo rm -Rf /home/linuxbrew/
+
+      - name: "Clone pySMESH"
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: "Configure conda"
+        shell: pwsh
+        run: |
+          conda init --all
+          conda env create -f binder/environment.yml
+
+      - name: "Check conda"
+        shell: pwsh
+        run: |
+          conda activate binder
+          conda info -a
+          conda list
+
+      - name: "Generate bindings"
+        shell: pwsh
+        run: |
+          conda activate binder
+          python binder/run.py -c binder/config.txt -o src
+
+      - name: "Upload bindings"
+        uses: actions/upload-artifact@v2
+        with:
+          name: pysmesh_src_${{ matrix.os }}
+          path: src
+
+  generate_win:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    name: Generate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['windows-latest']
+    steps:
+
+      - name: "Clone pySMESH"
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: "Add conda to PATH"
+        shell: bash -l {0}
+        run: echo "$CONDA/Scripts" >> $GITHUB_PATH
+
+      - name: "Configure conda"
+        shell: bash -l {0}
+        run: |
+          conda init --all
+          conda env create -f binder/environment.yml
+
+      - name: "Check conda"
+        shell: bash -l {0}
+        run: |
+          conda activate binder
+          conda info -a
+          conda list
+
+      - name: "Generate bindings"
+        shell: bash -l {0}
+        run: |
+          conda activate binder
+          python binder/run.py -c binder/config.txt -o src
+
+      - name: "Upload bindings"
+        uses: actions/upload-artifact@v2
+        with:
+          name: pysmesh_src_${{ matrix.os }}
+          path: src
   build_linux:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Build (${{ matrix.python-version }}, ${{ matrix.os }})
@@ -25,10 +117,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -q -y install libglu1-mesa-dev libgl1-mesa-dev libxi-dev libglfw3-dev libgles2-mesa-dev
-      
+
       - name: "Prepare VM"
         run: sudo rm -Rf /home/linuxbrew/
-      
+
       - name: "Clone pySMESH"
         uses: actions/checkout@v2
 
