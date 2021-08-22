@@ -39,9 +39,9 @@ class Test_NETGENPlugin(unittest.TestCase):
         box = BRepPrimAPI_MakeBox(10, 10, 10).Solid()
 
         gen = SMESH_Gen()
-        mesh = gen.CreateMesh(0, True)
+        mesh = gen.CreateMesh(True)
 
-        hyp = NETGENPlugin_SimpleHypothesis_3D(0, 0, gen)
+        hyp = NETGENPlugin_SimpleHypothesis_3D(0, gen)
         hyp.SetLocalLength(1.0)
 
         NETGENPlugin_NETGEN_2D3D(1, 0, gen)
@@ -63,12 +63,12 @@ class Test_NETGENPlugin(unittest.TestCase):
         box = BRepPrimAPI_MakeBox(10, 10, 10).Solid()
 
         gen = SMESH_Gen()
-        mesh = gen.CreateMesh(0, True)
+        mesh = gen.CreateMesh(True)
 
-        hyp = NETGENPlugin_SimpleHypothesis_2D(0, 0, gen)
+        hyp = NETGENPlugin_SimpleHypothesis_2D(0, gen)
         hyp.SetLocalLength(1.0)
 
-        NETGENPlugin_NETGEN_2D(1, 0, gen)
+        NETGENPlugin_NETGEN_2D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -87,13 +87,13 @@ class Test_NETGENPlugin(unittest.TestCase):
         box = BRepPrimAPI_MakeBox(10, 10, 10).Solid()
 
         gen = SMESH_Gen()
-        mesh = gen.CreateMesh(0, True)
+        mesh = gen.CreateMesh(True)
 
-        hyp = NETGENPlugin_SimpleHypothesis_2D(0, 0, gen)
+        hyp = NETGENPlugin_SimpleHypothesis_2D(0, gen)
         hyp.SetAllowQuadrangles(True)
         hyp.SetLocalLength(1.0)
 
-        NETGENPlugin_NETGEN_2D(1, 0, gen)
+        NETGENPlugin_NETGEN_2D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -114,15 +114,15 @@ class Test_NETGENPlugin(unittest.TestCase):
         edge = TopExp_Explorer(box, TopAbs_EDGE).Current()
 
         gen = SMESH_Gen()
-        mesh = gen.CreateMesh(0, True)
+        mesh = gen.CreateMesh(True)
 
-        hyp3d = NETGENPlugin_SimpleHypothesis_3D(0, 0, gen)
+        hyp3d = NETGENPlugin_SimpleHypothesis_3D(0, gen)
         hyp3d.SetLocalLength(1.0)
-        NETGENPlugin_NETGEN_2D3D(1, 0, gen)
+        NETGENPlugin_NETGEN_2D3D(1, gen)
 
-        hyp1d = StdMeshers_LocalLength(2, 0, gen)
+        hyp1d = StdMeshers_LocalLength(2, gen)
         hyp1d.SetLength(0.1)
-        StdMeshers_Regular_1D(3, 0, gen)
+        StdMeshers_Regular_1D(3, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
