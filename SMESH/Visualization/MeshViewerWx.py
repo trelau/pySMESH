@@ -20,7 +20,7 @@ import os
 
 from OCCT.MeshVS import MeshVS_Mesh, MeshVS_MeshPrsBuilder, MeshVS_DrawerAttribute
 from OCCT.Quantity import Quantity_Color, Quantity_TOC_RGB
-from OCCT.Visualization.WxViewer import ViewerWx
+from OCCT.Visualization.WxViewer import ShapeViewerWx
 from SMESH.SMDSAbs import SMDSAbs_Node
 from SMESH.SMESH import SMESH_MeshVSLink, SMESH_Mesh, SMESH_subMesh
 
@@ -29,7 +29,7 @@ __all__ = ['MeshViewerWx']
 _icon = os.path.dirname(__file__) + '/_resources/icon.png'
 
 
-class MeshViewerWx(ViewerWx):
+class MeshViewerWx(ShapeViewerWx):
     """
     Basic tool for viewing meshes built on pyOCCT basic viewer using wx.
     """
@@ -142,4 +142,4 @@ class MeshViewerWx(ViewerWx):
         if isinstance(entity, (SMESH_Mesh, SMESH_subMesh)):
             return self.display_mesh(entity, mode)
         else:
-            return super(MeshViewerWx, self).add(entity, rgb, transparency, material, mode)
+            return super(MeshViewerWx, self).add(entity, rgb, transparency, material)
