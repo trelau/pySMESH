@@ -24,6 +24,7 @@ code. If you are familiar with `conda`, an environment can be created for this t
 If all the necessary dependencies are available, the binder can be run to generate the binding
 sources:
 
+    python pyOCCT/binder/run.py -c pyOCCT/binder/config.txt -o pyOCCT/src
     python binder/run.py -c binder/config.txt -o src
 
 Be sure and check the output from the binding generation process in the command prompt in case there
