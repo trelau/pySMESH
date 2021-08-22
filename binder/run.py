@@ -186,7 +186,7 @@ def main():
     # Attempt to find include directories by searching for a known header file. Will likely
     # need to make this more robust.
     occt_include_path = find_include_path('Standard.hxx', conda_prefix)
-    pyocct_root = os.path.join(os.path.dirname(os.path.dirname(BINDER_ROOT)), 'pyOCCT')
+    pyocct_root = os.path.join(os.path.dirname(BINDER_ROOT), 'pyOCCT')
     pyocct_include_path = find_include_path('pyOCCT_Common.hxx', pyocct_root)
     smesh_include_path = find_include_path('SMESH_SMESH.hxx', conda_prefix, parent=True)
     netgen_include_path = find_include_path('ngcore.hpp', conda_prefix, parent=True)
