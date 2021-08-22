@@ -59,7 +59,11 @@ jobs:
         with:
           name: pysmesh_src_${{ matrix.os }}
           path: src
-
+      - name: "Upload pyOCCT bindings"
+        uses: actions/upload-artifact@v2
+        with:
+          name: pyocct_src_${{ matrix.os }}
+          path: pyOCCT/src
   generate_win:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Generate (${{ matrix.os }})
@@ -104,6 +108,11 @@ jobs:
         with:
           name: pysmesh_src_${{ matrix.os }}
           path: src
+      - name: "Upload pyOCCT bindings"
+        uses: actions/upload-artifact@v2
+        with:
+          name: pyocct_src_${{ matrix.os }}
+          path: pyOCCT/src
   build_linux:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Build (${{ matrix.python-version }}, ${{ matrix.os }})
@@ -141,6 +150,11 @@ jobs:
         with:
           name: pysmesh_src_${{ matrix.os }}
           path: src
+      - name: "Download pyOCCT binding sources"
+        uses: actions/download-artifact@v2
+        with:
+          name: pyocct_src_${{ matrix.os }}
+          path: pyOCCT/src
       - name: "Run conda build"
         shell: pwsh
         run: |
@@ -186,6 +200,11 @@ jobs:
         with:
           name: pysmesh_src_${{ matrix.os }}
           path: src
+      - name: "Download pyOCCT binding sources"
+        uses: actions/download-artifact@v2
+        with:
+          name: pyocct_src_${{ matrix.os }}
+          path: pyOCCT/src
       - name: "Run conda build"
         shell: bash -l {0}
         run: |
