@@ -119,7 +119,7 @@ link_directories(${OpenCASCADE_LIBRARY_DIR})
 enable_language(C)
 
 message(STATUS "Searching for VTK...")
-find_package(VTK REQUIRED)
+find_package(VTK REQUIRED COMPONENTS CommonCore CommonDataModel FiltersVerdict)
 
 message(STATUS "VTK include directory: ${VTK_INCLUDE_DIRS}")
 include_directories(${VTK_INCLUDE_DIRS})
