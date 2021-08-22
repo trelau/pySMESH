@@ -106,11 +106,12 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Build (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    needs: generate_linux
     strategy:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest']
-        python-version: ['3.6', '3.7', '3.8']
+        python-version: ['3.6', '3.7', '3.8', '3.9']
     steps:
 
       - name: "Install OpenGL"
@@ -133,7 +134,11 @@ jobs:
         run: |
           conda info -a
           conda list
-
+      - name: "Download binding sources"
+        uses: actions/download-artifact@v2
+        with:
+          name: pysmesh_src_${{ matrix.os }}
+          path: src
       - name: "Run conda build"
         shell: pwsh
         run: |
@@ -150,11 +155,12 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Build (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    needs: generate_win
     strategy:
       fail-fast: false
       matrix:
         os: ['windows-latest']
-        python-version: ['3.6', '3.7', '3.8']
+        python-version: ['3.6', '3.7', '3.8', '3.9']
     steps:
 
       - name: "Clone pySMESH"
@@ -173,7 +179,11 @@ jobs:
         run: |
           conda info -a
           conda list
-
+      - name: "Download binding sources"
+        uses: actions/download-artifact@v2
+        with:
+          name: pysmesh_src_${{ matrix.os }}
+          path: src
       - name: "Run conda build"
         shell: bash -l {0}
         run: |
