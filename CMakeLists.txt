@@ -219,8 +219,8 @@ set(Netgen_LIBRARIES "nglib4smesh")
 # --------------------------------------------------------------------------- #
 # pyOCCT
 # --------------------------------------------------------------------------- #
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../pyOCCT/inc/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../pyOCCT/src/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/pyOCCT/inc/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/pyOCCT/src/)
 
 # --------------------------------------------------------------------------- #
 # pySMESH
