@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 cmake_minimum_required(VERSION 3.10)
-project(pySMESH VERSION 9.6.0 LANGUAGES CXX)
+project(pySMESH VERSION 9.6.0 LANGUAGES C CXX)
 
 
 # --------------------------------------------------------------------------- #
@@ -60,10 +60,11 @@ endif()
 
 
 # --------------------------------------------------------------------------- #
-# PYBIND11
+# PYTHON and PYBIND11
 # --------------------------------------------------------------------------- #
-message(STATUS "Searching for pybind11...")
-find_package(pybind11 REQUIRED)
+message(STATUS "Searching for Python and pybind11...")
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 
 
 # --------------------------------------------------------------------------- #
@@ -114,10 +115,6 @@ link_directories(${OpenCASCADE_LIBRARY_DIR})
 # ----------------------------------------------------------------------- #
 # VTK
 # ----------------------------------------------------------------------- #
-
-# cmake bundles a vtk patch for hdf5 that requires C
-enable_language(C)
-
 message(STATUS "Searching for VTK...")
 if(WIN32)
     find_package(VTK REQUIRED COMPONENTS CommonCore CommonDataModel FiltersVerdict)
@@ -134,7 +131,7 @@ include_directories(${VTK_INCLUDE_DIRS})
 # --------------------------------------------------------------------------- #
 set(SMESH_ABS_LIBS)
 message(STATUS "Searching for SMESH...")
-find_package(SMESH 9.6.0 REQUIRED)
+find_package(SMESH REQUIRED)
 
 if(NOT EXISTS ${SMESH_INCLUDE_PATH})
     message(FATAL_ERROR "Failed to find SMESH include directory.")
