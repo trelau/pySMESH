@@ -61,6 +61,8 @@
 -class NETGENPlugin_RemesherHypothesis_2D_i
 
 # Excluded typedefs -----------------------------------------------------------
+-typedef TBlockShapes
+
 
 # Excluded functions ----------------------------------------------------------
 -function* operator new_
