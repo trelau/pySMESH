@@ -195,16 +195,16 @@ set(OmniORB4_LIBS "omniORB4" "omnithread")
 # ----------------------------------------------------------------------- #
 # PTHREAD
 # ----------------------------------------------------------------------- #
-find_package(Threads REQUIRED)
-#set(PTHREAD_INCLUDE_DIRS "" CACHE PATH "pthread include directory.")
-
-if(NOT Threads_FOUND)
+if(WIN32)
+  set(PTHREAD_INCLUDE_DIRS "" CACHE PATH "pthread include directory.")
+  if(NOT EXISTS ${PTHREAD_INCLUDE_DIRS})
     message(FATAL_ERROR "pthread include directory is required.")
+  endif()
+  message(STATUS "pthread include directory: ${PTHREAD_INCLUDE_DIRS}")
+  include_directories(${PTHREAD_INCLUDE_DIRS})
+else()
+    find_package(Threads REQUIRED)
 endif()
-
-#message(STATUS "pthread include directory: ${PTHREAD_INCLUDE_DIRS}")
-#include_directories(${PTHREAD_INCLUDE_DIRS})
-
 
 # ----------------------------------------------------------------------- #
 # NETGEN
