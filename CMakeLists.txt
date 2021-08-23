@@ -88,6 +88,11 @@ message(STATUS "OpenGL include directory: ${OPENGL_INCLUDE_DIR}")
 message(STATUS "OpenGL libraries: ${OPENGL_LIBRARIES}")
 include_directories(${OPENGL_INCLUDE_DIR})
 
+# --------------------------------------------------------------------------- #
+# GLEW
+# --------------------------------------------------------------------------- #
+message(STATUS "Searching for GLEW...")
+find_package(GLEW REQUIRED)
 
 # --------------------------------------------------------------------------- #
 # OpenCASCADE
