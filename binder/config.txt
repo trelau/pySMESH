@@ -175,6 +175,11 @@
 
 # Skipped types ---------------------------------------------------------------
 
+# Return value policies -------------------------------------------------------
+# The SMESH_Gen manages all SMESH_Meshes created using it's interal SMESHDS_Document
+# so keep the SMESH_Gen around as long as the mesh is alive
++return_policy SMESH_Gen::CreateMesh-->reference_internal
+
 # Manual text -----------------------------------------------------------------
 
 # Extra text ------------------------------------------------------------------
