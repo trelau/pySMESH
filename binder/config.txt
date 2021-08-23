@@ -177,6 +177,34 @@
 
 # Return value policies -------------------------------------------------------
 
++return_policy SMESH_Gen::GetCurrentSubMesh-->reference_internal
++return_policy SMESH_Gen::GetStudyContext-->reference_internal
++return_policy SMESH_Gen::GetAlgo-->reference_internal
+
+
++return_policy SMESH_Mesh::FindMesh-->reference_internal
+#+return_policy SMESH_Mesh::GetShapeToMesh-->reference_internal
++return_policy SMESH_Mesh::GetHypothesis-->reference_internal
++return_policy SMESH_Mesh::GetSubMesh-->reference_internal
++return_policy SMESH_Mesh::GetSubMeshContaining-->reference_internal
++return_policy SMESH_Mesh::GetMeshDS-->reference_internal
++return_policy SMESH_Mesh::GetGen-->reference_internal
++return_policy SMESH_Mesh::GetGroup-->reference_internal
+
+# TODO: Need shared ptr?
+#+return_policy SMESH_Mesh::AddGroup-->reference_internal
+
+# Keep alive -----------------------------------------------------------------
+# Add keep alive call policy to ensure that MESH_Gen stays alive until
+# the mesh is deleted
++keep_alive SMESH_Gen::CreateMesh-->0, 1
+
+# TODO: This does not work...
+#+patch NETGENPlugin: py::arg("gen"));-->py::arg("gen"), py::keep_alive<1, 3>());
+#+patch SMESH: py::arg("gen"));-->py::arg("gen"), py::keep_alive<1, 3>());
+#+patch StdMeshers: py::arg("gen"));-->py::arg("gen"), py::keep_alive<1, 3>());
+
+
 # Manual text -----------------------------------------------------------------
 
 # Extra text ------------------------------------------------------------------
