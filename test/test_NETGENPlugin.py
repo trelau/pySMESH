@@ -44,7 +44,7 @@ class Test_NETGENPlugin(unittest.TestCase):
         hyp = NETGENPlugin_SimpleHypothesis_3D(0, gen)
         hyp.SetLocalLength(1.0)
 
-        NETGENPlugin_NETGEN_2D3D(1, 0, gen)
+        algo = NETGENPlugin_NETGEN_2D3D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -53,8 +53,8 @@ class Test_NETGENPlugin(unittest.TestCase):
         success = gen.Compute(mesh, box)
         self.assertTrue(success)
 
-        self.assertEqual(mesh.NbTetras(), 4741)
-        self.assertEqual(mesh.NbNodes(), 1185)
+        self.assertEqual(mesh.NbTetras(), 4671)
+        self.assertEqual(mesh.NbNodes(), 1172)
 
     def test_Box2DTri(self):
         """
@@ -68,7 +68,7 @@ class Test_NETGENPlugin(unittest.TestCase):
         hyp = NETGENPlugin_SimpleHypothesis_2D(0, gen)
         hyp.SetLocalLength(1.0)
 
-        NETGENPlugin_NETGEN_2D(1, gen)
+        algo = NETGENPlugin_NETGEN_2D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -77,8 +77,8 @@ class Test_NETGENPlugin(unittest.TestCase):
         success = gen.Compute(mesh, box)
         self.assertTrue(success)
 
-        self.assertEqual(mesh.NbTriangles(), 1422)
-        self.assertEqual(mesh.NbNodes(), 713)
+        self.assertEqual(mesh.NbTriangles(), 1416)
+        self.assertEqual(mesh.NbNodes(), 710)
 
     def test_Box2DQuad(self):
         """
@@ -93,7 +93,7 @@ class Test_NETGENPlugin(unittest.TestCase):
         hyp.SetAllowQuadrangles(True)
         hyp.SetLocalLength(1.0)
 
-        NETGENPlugin_NETGEN_2D(1, gen)
+        algo = NETGENPlugin_NETGEN_2D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -118,11 +118,11 @@ class Test_NETGENPlugin(unittest.TestCase):
 
         hyp3d = NETGENPlugin_SimpleHypothesis_3D(0, gen)
         hyp3d.SetLocalLength(1.0)
-        NETGENPlugin_NETGEN_2D3D(1, gen)
+        algo = NETGENPlugin_NETGEN_2D3D(1, gen)
 
         hyp1d = StdMeshers_LocalLength(2, gen)
         hyp1d.SetLength(0.1)
-        StdMeshers_Regular_1D(3, gen)
+        mesher = StdMeshers_Regular_1D(3, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -133,8 +133,8 @@ class Test_NETGENPlugin(unittest.TestCase):
         success = gen.Compute(mesh, box)
         self.assertTrue(success)
 
-        self.assertEqual(mesh.NbTetras(), 31547)
-        self.assertEqual(mesh.NbNodes(), 6205)
+        self.assertEqual(mesh.NbTetras(), 34068)
+        self.assertEqual(mesh.NbNodes(), 6665)
 
 
 if __name__ == '__main__':
