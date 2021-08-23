@@ -247,7 +247,7 @@ foreach(SRC ${SMESH_SRCS})
     pybind11_add_module(py${MOD} ${SRC})
 
     target_link_libraries(py${MOD} PUBLIC ${OpenCASCADE_LIBRARIES}
-                                         ${PYTHON_LIBRARIES}
+                                         ${Python_LIBRARIES}
                                          ${SMESH_ABS_LIBS}
                                          ${Netgen_LIBRARIES}
                                          ${OmniORB4_LIBS}
