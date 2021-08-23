@@ -89,10 +89,20 @@ message(STATUS "OpenGL libraries: ${OPENGL_LIBRARIES}")
 include_directories(${OPENGL_INCLUDE_DIR})
 
 # --------------------------------------------------------------------------- #
+# Freetype
+# --------------------------------------------------------------------------- #
+if (WIN32)
+    message(STATUS "Searching for freetype...")
+    find_package(Freetype REQUIRED)
+endif()
+
+# --------------------------------------------------------------------------- #
 # GLEW
 # --------------------------------------------------------------------------- #
-message(STATUS "Searching for GLEW...")
-find_package(GLEW REQUIRED)
+if (WIN32)
+    message(STATUS "Searching for GLEW...")
+    find_package(GLEW REQUIRED)
+endif()
 
 # --------------------------------------------------------------------------- #
 # OpenCASCADE
