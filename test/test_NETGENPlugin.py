@@ -44,7 +44,7 @@ class Test_NETGENPlugin(unittest.TestCase):
         hyp = NETGENPlugin_SimpleHypothesis_3D(0, gen)
         hyp.SetLocalLength(1.0)
 
-        algo = NETGENPlugin_NETGEN_2D3D(1, gen)
+        NETGENPlugin_NETGEN_2D3D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -68,7 +68,7 @@ class Test_NETGENPlugin(unittest.TestCase):
         hyp = NETGENPlugin_SimpleHypothesis_2D(0, gen)
         hyp.SetLocalLength(1.0)
 
-        algo = NETGENPlugin_NETGEN_2D(1, gen)
+        NETGENPlugin_NETGEN_2D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -93,7 +93,7 @@ class Test_NETGENPlugin(unittest.TestCase):
         hyp.SetAllowQuadrangles(True)
         hyp.SetLocalLength(1.0)
 
-        algo = NETGENPlugin_NETGEN_2D(1, gen)
+        NETGENPlugin_NETGEN_2D(1, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
@@ -122,7 +122,7 @@ class Test_NETGENPlugin(unittest.TestCase):
 
         hyp1d = StdMeshers_LocalLength(2, gen)
         hyp1d.SetLength(0.1)
-        mesher = StdMeshers_Regular_1D(3, gen)
+        StdMeshers_Regular_1D(3, gen)
 
         mesh.ShapeToMesh(box)
         mesh.AddHypothesis(box, 0)
