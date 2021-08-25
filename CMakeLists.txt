@@ -206,7 +206,15 @@ include_directories(${Boost_INCLUDE_DIR})
 # OmniORB
 # ----------------------------------------------------------------------- #
 message(STATUS "Searching for OmniOTB...")
-find_package(OmniORB REQUIRED)
+if (WIN32)
+    # OmniORB cmake package is only supplied for windows
+    # importing it seems to force it to use nt threads instead of pthread
+    # find_package(OmniORB REQUIRED)
+    if(NOT EXISTS ${OMNIORB_LIB_PATH})
+        message(FATAL_ERROR "Failed to find OMNIORB library directory.")
+    endif()
+    link_directories("${OMNIORB_LIB_PATH}")
+endif()
 set(OmniORB4_LIBS "omniORB4" "omnithread")
 
 # ----------------------------------------------------------------------- #
