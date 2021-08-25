@@ -205,6 +205,8 @@ include_directories(${Boost_INCLUDE_DIR})
 # ----------------------------------------------------------------------- #
 # OmniORB
 # ----------------------------------------------------------------------- #
+message(STATUS "Searching for OmniOTB...")
+find_package(OmniORB REQUIRED)
 set(OmniORB4_LIBS "omniORB4" "omnithread")
 
 # ----------------------------------------------------------------------- #
