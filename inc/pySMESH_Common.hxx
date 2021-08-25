@@ -41,4 +41,9 @@ PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
 // Deleter template for mixed holder types with public/hidden destructors
 template<typename T> struct Deleter { void operator() (T *o) const { delete o; } };
 
+// Use omnithread/posix on windows
+#if defined(__WIN32__)
+#define __POSIX_NT__
+#endif
+
 #endif
