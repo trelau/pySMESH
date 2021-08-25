@@ -213,9 +213,12 @@ if (WIN32)
     #if(NOT EXISTS ${OMNIORB_LIB_PATH})
     #    message(FATAL_ERROR "Failed to find OMNIORB library directory.")
     #endif()
-    #link_directories("${OMNIORB_LIB_PATH}")
+    #link_directories("${OmniORB_LIB_PATH}")
+    set(OmniORB4_LIBS OmniORB::omniORB4  OmniORB::omnithread)
+else()
+    set(OmniORB4_LIBS "omniORB4" "omnithread")
 endif()
-set(OmniORB4_LIBS "omniORB4" "omnithread")
+
 
 # ----------------------------------------------------------------------- #
 # PTHREAD
