@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <Standard_Handle.hxx>
 
-//#include <boost/shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace py = pybind11;
 
@@ -36,7 +36,7 @@ namespace py = pybind11;
 PYBIND11_DECLARE_HOLDER_TYPE(T, opencascade::handle<T>, true);
 
 // Use boost::shared_ptr for some SMESH iterators
-PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
+PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 
 // Deleter template for mixed holder types with public/hidden destructors
 template<typename T> struct Deleter { void operator() (T *o) const { delete o; } };

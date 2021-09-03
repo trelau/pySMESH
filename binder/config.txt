@@ -121,6 +121,7 @@
 
 # Headers ---------------------------------------------------------------------
 +header SMESH: bind_NCollection_Sequence.hxx
++header SMESH: SMESH_ControlsDef.hxx
 
 +header SMESHDS: bind_NCollection_DataMap.hxx
 
