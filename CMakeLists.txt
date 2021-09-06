@@ -276,7 +276,7 @@ foreach(SRC ${SMESH_SRCS})
 
     target_link_libraries(py${MOD} PUBLIC ${OpenCASCADE_LIBRARIES}
                                          ${Python_LIBRARIES}
-                                         ${SMESH_ABS_LIBS}
+                                         ${SMESH_LIBRARIES}
                                          ${Netgen_LIBRARIES}
                                          ${OmniORB4_LIBS}
                                          ${Boost_LIBRARIES})
