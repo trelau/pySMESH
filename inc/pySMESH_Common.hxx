@@ -41,8 +41,4 @@ PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 // Deleter template for mixed holder types with public/hidden destructors
 template<typename T> struct Deleter { void operator() (T *o) const { delete o; } };
 
-#ifdef _WIN32
-    #include <Windows.h>
-#endif
-
 #endif
