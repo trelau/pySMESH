@@ -149,14 +149,24 @@
 -header NETGENPlugin: NETGENPlugin_SimpleHypothesis_2D_i.hxx
 -header NETGENPlugin: NETGENPlugin_SimpleHypothesis_3D_i.hxx
 
+
+-header Utils: Utils_DESTRUCTEUR_GENERIQUE.hxx
+-header Utils: Utils_Identity.hxx
+-header Utils: Utils_Mutex.hxx
+-header Utils: Utils_ORB_INIT.hxx
+-header Utils: Utils_Timer.hxx
+
 # Python names ----------------------------------------------------------------
 
 # nodelete option -------------------------------------------------------------
+
 
 # Excluded base classes -------------------------------------------------------
 
 # Excluded fields -------------------------------------------------------------
 -field NETGENPlugin_NetgenLibWrapper::_ngMesh
+-field _ChunkIterator::myElement
+-field _ChunkIterator::myRanges
 
 # Excluded imports ------------------------------------------------------------
 -import SMDS: SMESHDS
@@ -177,11 +187,23 @@
 # Skipped types ---------------------------------------------------------------
 
 # Return value policies -------------------------------------------------------
++return_policy DriverUNV_R_SMDS_Mesh::GetGroupNamesMap-->reference_internal
+
+
++return_policy NETGENPlugin_RemesherHypothesis_2D::GetFixedEdgeGroup-->reference_internal
++return_policy NETGENPlugin_Internals::getMesh-->reference_internal
++return_policy NETGENPlugin_Internals::getEdgesAndVerticesWithFaces-->reference_internal
++return_policy NETGENPlugin_Internals::getFacesWithVertices-->reference_internal
++return_policy NETGENPlugin_Internals::getSolidsWithVertices-->reference_internal
+
++return_policy SMESH_MeshVSLink::GetAllNodes-->reference_internal
++return_policy SMESH_MeshVSLink::GetAllElements-->reference_internal
++return_policy SMESH_MeshVSLink::FindElement-->reference_internal
++return_policy SMESH_MeshVSLink::FindNode-->reference_internal
 
 +return_policy SMESH_Gen::GetCurrentSubMesh-->reference_internal
 +return_policy SMESH_Gen::GetStudyContext-->reference_internal
 +return_policy SMESH_Gen::GetAlgo-->reference_internal
-
 
 +return_policy SMESH_Mesh::FindMesh-->reference_internal
 #+return_policy SMESH_Mesh::GetShapeToMesh-->reference_internal
@@ -192,13 +214,116 @@
 +return_policy SMESH_Mesh::GetGen-->reference_internal
 +return_policy SMESH_Mesh::GetGroup-->reference_internal
 
++return_policy SMESH_Algo::GetCompatibleHypoFilter-->reference_internal
+
++return_policy SMDS_ElementFactory::FindElement-->reference_internal
++return_policy SMDS_NodeFactory::FindNode-->reference_internal
++return_policy SMDS_FaceOfNodes::GetNode-->reference_internal
++return_policy SMDS_LinearEdge::GetNode-->reference_internal
+
++return_policy SMDS_ElementChunk::Element-->reference_internal
++return_policy SMDS_ElementChunk::GetPositionPtr-->reference_internal
++return_policy SMDS_ElementChunk::GetUsedRanges-->reference_internal
++return_policy SMDS_ElementChunk::GetUsedRangesMinMax-->reference_internal
++return_policy SMDS_ElementChunk::GetSubIDRangesMinMax-->reference_internal
++return_policy SMDS_ElementChunk::GetMesh-->reference_internal
+
++return_policy SMDS_Mesh::GetGrid-->reference_internal
++return_policy SMDS_Mesh::AddSubMesh-->reference_internal
++return_policy SMDS_Mesh::AddNodeWithID-->reference_internal
++return_policy SMDS_Mesh::AddNode-->reference_internal
++return_policy SMDS_Mesh::Add0DElementWithID-->reference_internal
++return_policy SMDS_Mesh::Add0DElement-->reference_internal
++return_policy SMDS_Mesh::AddBallWithID-->reference_internal
++return_policy SMDS_Mesh::AddBall-->reference_internal
++return_policy SMDS_Mesh::AddEdgeWithID-->reference_internal
++return_policy SMDS_Mesh::AddEdge-->reference_internal
++return_policy SMDS_Mesh::AddFaceWithID-->reference_internal
++return_policy SMDS_Mesh::AddFace-->reference_internal
++return_policy SMDS_Mesh::AddVolumeWithID-->reference_internal
++return_policy SMDS_Mesh::AddVolume-->reference_internal
++return_policy SMDS_Mesh::AddPolygonalFaceWithID-->reference_internal
++return_policy SMDS_Mesh::AddPolygonalFace-->reference_internal
++return_policy SMDS_Mesh::AddPolyhedralVolumeWithID-->reference_internal
++return_policy SMDS_Mesh::AddPolyhedralVolume-->reference_internal
++return_policy SMDS_Mesh::AddVolumeFromVtkIds-->reference_internal
++return_policy SMDS_Mesh::AddFaceFromVtkIds-->reference_internal
++return_policy SMDS_Mesh::FindNode-->reference_internal
++return_policy SMDS_Mesh::FindNodeVtk-->reference_internal
++return_policy SMDS_Mesh::FindElementVtk-->reference_internal
++return_policy SMDS_Mesh::FindElement-->reference_internal
++return_policy SMDS_Mesh::Find0DElement-->reference_internal
++return_policy SMDS_Mesh::FindBall-->reference_internal
++return_policy SMDS_Mesh::FindEdge-->reference_internal
++return_policy SMDS_Mesh::FindFace-->reference_internal
++return_policy SMDS_Mesh::GetMeshInfo-->reference_internal
+
++return_policy SMDS_MeshElement::GetNode-->reference_internal
++return_policy SMDS_MeshElement::GetNodeWrap-->reference_internal
++return_policy SMDS_MeshElement::GetMesh-->reference_internal
+
++return_policy SMDS_MeshGroup::GetMesh-->reference_internal
++return_policy SMDS_MeshNode::GetNode-->reference_internal
++return_policy SMDS_MeshVolume::GetNode-->reference_internal
++return_policy SMDS_MeshVolume::GetFaceNode-->reference_internal
++return_policy SMDS_PolygonalFaceOfNodes::GetNode-->reference_internal
++return_policy SMDS_UnstructuredGrid::extrudeVolumeFromFace-->reference_internal
++return_policy SMDS_UnstructuredGrid::GetLinks-->reference_internal
++return_policy SMDS_UnstructuredGrid::getDownArray-->reference_internal
+
++return_policy SMDS_VolumeOfNodes::GetNode-->reference_internal
++return_policy SMDS_VolumeTool::Element-->reference_internal
++return_policy SMDS_VolumeTool::GetNodes-->reference_internal
++return_policy SMDS_VolumeTool::GetFaceNodes-->reference_internal
+
+
 # TODO: Need shared ptr?
 #+return_policy SMESH_Mesh::AddGroup-->reference_internal
 
 # Keep alive -----------------------------------------------------------------
+
+# Keep mesh alive while driver exists
++keep_alive Driver_SMDS_Mesh::SetMesh-->2, 1
++keep_alive Driver_SMESHDS_Mesh::SetMesh-->2, 1
+
++keep_alive DriverMED_Family::AddElement-->2, 1
++keep_alive DriverMED_W_Field::Set-->1, 2
++keep_alive DriverMED_W_SMESHDS_Mesh::AddGroup-->2, 1
++keep_alive DriverMED_W_SMESHDS_Mesh::AddSubMesh-->2, 1
++keep_alive DriverUNV_W_SMDS_Mesh::AddGroup-->2, 1
+
+
++keep_alive NETGENPlugin_Mesher::NETGENPlugin_Mesher-->2, 1
++keep_alive NETGENPlugin_Mesher::SetParameters-->2, 1
++keep_alive NETGENPlugin_Internals::NETGENPlugin_Internals-->2, 1
+
+
+# Keep mesh alive
++keep_alive SMDS_ElementHolder::SMDS_ElementHolder-->2, 1
++keep_alive SMDS_ElementHolder::add-->2, 1
++keep_alive SMDS_ElementFactory::SMDS_ElementFactory-->2, 1
++keep_alive SMDS_ElementFactory::NewElement-->0, 1
++keep_alive SMDS_ElementFactory::NewCell-->0, 1
++keep_alive SMDS_NodeFactory::NewNode-->0, 1
++keep_alive SMDS_ElementChunk::SMDS_ElementChunk-->2, 1
++keep_alive SMDS_MeshGroup::SMDS_MeshGroup-->2, 1
++keep_alive SMDS_MeshGroup::Add-->2, 1
+
++keep_alive SMESH_MeshVSLink::SMESH_MeshVSLink-->2, 1
++keep_alive SMESH_MeshVSLink::SMESH_MeshVSLink(const SMESH_Mesh *aMesh, const SMESH_Group *aGroup)-->1, 2, 3
+
+# TODO: Keep all parameters alive???
++keep_alive SMDS_FaceOfNodes::SMDS_FaceOfNodes-->2, 1
++keep_alive SMDS_FaceOfNodes::ChangeNodes-->2, 1
++keep_alive SMDS_LinearEdge::SMDS_LinearEdge-->2, 1
++keep_alive SMDS_LinearEdge::ChangeNodes-->2, 1
++keep_alive SMDS_VolumeTool::SMDS_VolumeTool-->2, 1
++keep_alive SMDS_VolumeTool::Set-->2, 1
+
 # Add keep alive call policy to ensure that MESH_Gen stays alive until
 # the mesh is deleted
 +keep_alive SMESH_Gen::CreateMesh-->0, 1
++keep_alive uvPtStruct::uvPtStruct(const SMDS_MeshNode *)-->1, 0
 
 
 +patch NETGENPlugin: py::arg("gen"));-->py::arg("gen"), py::keep_alive<3, 1>());
