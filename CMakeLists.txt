@@ -203,24 +203,6 @@ message(STATUS "Boost libraires: ${Boost_LIBRARIES}")
 include_directories(${Boost_INCLUDE_DIR})
 
 # ----------------------------------------------------------------------- #
-# OmniORB
-# ----------------------------------------------------------------------- #
-message(STATUS "Searching for OmniOTB...")
-if (WIN32)
-    # OmniORB cmake package is only supplied for windows
-    # importing it seems to force it to use nt threads instead of pthread
-    find_package(OmniORB REQUIRED)
-    #if(NOT EXISTS ${OMNIORB_LIB_PATH})
-    #    message(FATAL_ERROR "Failed to find OMNIORB library directory.")
-    #endif()
-    #link_directories("${OmniORB_LIB_PATH}")
-    set(OmniORB4_LIBS OmniORB::omniORB4  OmniORB::omnithread)
-else()
-    set(OmniORB4_LIBS "omniORB4" "omnithread")
-endif()
-
-
-# ----------------------------------------------------------------------- #
 # PTHREAD
 # ----------------------------------------------------------------------- #
 if(WIN32)
@@ -230,8 +212,6 @@ if(WIN32)
   endif()
   message(STATUS "pthread include directory: ${PTHREAD_INCLUDE_DIRS}")
   include_directories(${PTHREAD_INCLUDE_DIRS})
-else()
-    find_package(Threads REQUIRED)
 endif()
 
 # ----------------------------------------------------------------------- #
@@ -275,11 +255,10 @@ foreach(SRC ${SMESH_SRCS})
     pybind11_add_module(py${MOD} ${SRC})
 
     target_link_libraries(py${MOD} PUBLIC ${OpenCASCADE_LIBRARIES}
-                                         ${Python_LIBRARIES}
-                                         ${SMESH_LIBRARIES}
-                                         ${Netgen_LIBRARIES}
-                                         ${OmniORB4_LIBS}
-                                         ${Boost_LIBRARIES})
+                                          ${Python_LIBRARIES}
+                                          ${SMESH_LIBRARIES}
+                                          ${Netgen_LIBRARIES}
+                                          ${Boost_LIBRARIES})
     set_target_properties(py${MOD} PROPERTIES SUFFIX ${EXTENSION} COMPILE_FLAGS ${WARNINGS})
     target_include_directories(py${MOD} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
     install(FILES ${OUTPUT_PATH}/py${MOD}${EXTENSION}

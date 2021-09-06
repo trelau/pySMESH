@@ -22,7 +22,6 @@ requirements:
     - netgen
     - tbb-devel
     - boost-cpp
-    - omniorb
 
   run:
     - python
@@ -30,7 +29,6 @@ requirements:
     - netgen
     - smesh
     - boost-cpp
-    - omniorb
 
 test:
   source_files:
