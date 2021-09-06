@@ -175,7 +175,7 @@ list(APPEND SMESH_LIBRARIES "Kernel")
 
 foreach(LIB ${SMESH_LIBRARIES})
     message(STATUS "SMESH library: ${LIB}")
-    set(FOUND_LIB "${LIB}-NOTFOUND")
+    set(FOUND_LIB "FOUND_LIB-NOTFOUND")
     find_library(FOUND_LIB ${LIB} PATHS ${SMESH_LIB_PATH})
     message(STATUS "SMESH found library: ${FOUND_LIB}")
     list(APPEND SMESH_ABS_LIBS ${FOUND_LIB})
