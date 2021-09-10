@@ -131,6 +131,10 @@
 +header SMDS: vtkDataSet.h
 +header SMDS: vtkUnstructuredGrid.h
 +header SMDS: vtkPoints.h
++header SMDS: bind__ChunkIterator.hxx
++header SMDS: bind_SMDS_VtkCellIterator.hxx
++header SMDS: bind_SMDS_VtkCellIteratorPolyH.hxx
++header SMDS: bind_SMDS_VtkCellIteratorToUNV.hxx
 
 +header StdMeshers: bind_NCollection_IndexedMap.hxx
 +header StdMeshers: SMESH_Group.hxx
@@ -280,6 +284,8 @@
 # TODO: Need shared ptr?
 #+return_policy SMESH_Mesh::AddGroup-->reference_internal
 
+# +return_policy _ChunkIterator::more-->reference
+
 # Keep alive -----------------------------------------------------------------
 
 # Keep mesh alive while driver exists
@@ -340,6 +346,32 @@
 +after_type SMESH_MesherHelper-->/*
 +before_type SMESH_subMesh-->*/
 
+#
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_ElemIterator, TUsedRangeSet>(mod, "SMDS_Iterator_ElemChunkUsedRange", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_NodeIterator, TUsedRangeSet>(mod, "SMDS_Iterator_NodeChunkUsedRange", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_0DElementIterator, TUsedRangeSet>(mod, "SMDS_Iterator_0DElementChunkUsedRange", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_EdgeIterator, TUsedRangeSet>(mod, "SMDS_Iterator_FaceChunkUsedRange", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_FaceIterator, TUsedRangeSet>(mod, "SMDS_Iterator_EdgeChunkUsedRange", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_VolumeIterator, TUsedRangeSet>(mod, "SMDS_Iterator_VolumeChunkUsedRange", py::module_local(false));
+
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_ElemIterator, TSubIDRangeSet>(mod, "SMDS_Iterator_ElemSubIDChunkSubID", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_NodeIterator, TSubIDRangeSet>(mod, "SMDS_Iterator_NodeSubIDChunkSubID", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_0DElementIterator, TSubIDRangeSet>(mod, "SMDS_Iterator_0DElementChunkSubID", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_EdgeIterator, TSubIDRangeSet>(mod, "SMDS_Iterator_FaceChunkSubID", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_FaceIterator, TSubIDRangeSet>(mod, "SMDS_Iterator_EdgeChunkSubID", py::module_local(false));
++after_type SMDS_Mesh-->bind__ChunkIterator<SMDS_VolumeIterator, TSubIDRangeSet>(mod, "SMDS_Iterator_VolumeChunkSubID", py::module_local(false));
+
++after_type SMDS_MeshCell-->bind_SMDS_VtkCellIterator<SMDS_ElemIterator>(mod, "SMDS_VtkCellIterator_Elem", py::module_local(false));
++after_type SMDS_MeshCell-->bind_SMDS_VtkCellIterator<SMDS_NodeIterator>(mod, "SMDS_VtkCellIterator_Node", py::module_local(false));
+
++after_type SMDS_MeshVolume-->bind_SMDS_VtkCellIterator<SMDS_ElemIterator, _GetVtkNodesPolyh>(mod, "SMDS_VtkCellIterator_ElemPolyh", py::module_local(false));
++after_type SMDS_MeshVolume-->bind_SMDS_VtkCellIterator<SMDS_NodeIterator, _GetVtkNodesPolyh>(mod, "SMDS_VtkCellIterator_NodePolyh", py::module_local(false));
++after_type SMDS_MeshVolume-->bind_SMDS_VtkCellIteratorPolyH<SMDS_ElemIterator>(mod, "SMDS_VtkCellIteratorPolyH_Elem", py::module_local(false));
++after_type SMDS_MeshVolume-->bind_SMDS_VtkCellIteratorPolyH<SMDS_NodeIterator>(mod, "SMDS_VtkCellIteratorPolyH_Node", py::module_local(false));
+
+#+after_type SMDS_Mesh-->bind_SMDS_VtkCellIteratorToUNV<SMDS_NodeIterator>(mod, "SMDS_VtkCellIteratorToUNV_Node", py::module_local(false));
+#+after_type SMDS_Mesh-->bind_SMDS_SetIterator<SMDS_ElementVectorIterator>(mod, "SMDS_ElementVectorIterator", py::module_local(false));
+
 # Patches -----------------------------------------------------------------
 +patch DriverUNV: bind_std::map<SMDS_MeshGroup *, std::basic_string<char>>-->py::bind_map<std::map<SMDS_MeshGroup *, std::basic_string<char>>>
 +patch DriverUNV: bind_std::list<SMESHDS_GroupBase *>-->// fixme // py::bind_vector<std::list<SMESHDS_GroupBase *>>
@@ -354,3 +386,18 @@
 +patch SMESH: bind_std::pair-->// fixme // bind_std::pair
 +patch SMESHDS: bind_boost::shared_ptr-->// fixme // bind_boost::shared_ptr
 +patch StdMeshers: bind_boost::shared_ptr-->// fixme // bind_boost::shared_ptr
+
+# TODO: define custom holder type, patch to add boost::shared_ptr holder
++patch bind_SMDS_Iterator: py::class_<SMDS_Iterator<VALUE>>-->py::class_<SMDS_Iterator<VALUE>, boost::shared_ptr<SMDS_Iterator<VALUE>>>
++patch bind__ChunkIterator: py::class_<_ChunkIterator<ELEM_ITERATOR, RANGE_SET>, ELEM_ITERATOR>-->py::class_<_ChunkIterator<ELEM_ITERATOR, RANGE_SET>, boost::shared_ptr<_ChunkIterator<ELEM_ITERATOR, RANGE_SET>>, ELEM_ITERATOR>
++patch bind_SMDS_VtkCellIterator: py::class_<SMDS_VtkCellIterator<SMDS_ITERATOR, GET_VTK_NODES>-->py::class_<SMDS_VtkCellIterator<SMDS_ITERATOR, GET_VTK_NODES>, boost::shared_ptr<SMDS_VtkCellIterator<SMDS_ITERATOR, GET_VTK_NODES>>
++patch bind_SMDS_VtkCellIteratorPolyH: py::class_<SMDS_VtkCellIteratorPolyH<SMDS_ITERATOR>-->py::class_<SMDS_VtkCellIteratorPolyH<SMDS_ITERATOR>,  boost::shared_ptr<SMDS_VtkCellIteratorPolyH<SMDS_ITERATOR>>
++patch bind_SMDS_VtkCellIteratorToUNV: py::class_<SMDS_VtkCellIteratorToUNV<SMDS_ITERATOR>-->py::class_<SMDS_VtkCellIteratorToUNV<SMDS_ITERATOR>, boost::shared_ptr<SMDS_VtkCellIteratorToUNV<SMDS_ITERATOR>>
+
+
+# Disable constructors/fields that don't work
++patch bind__ChunkIterator: cls__ChunkIterator.def(py::init-->// patched out // cls__ChunkIterator.def(py::init
++patch bind__ChunkIterator: cls__ChunkIterator.def_readwrite-->// patched out // cls__ChunkIterator.def_readwrite
+
+# TODO: Support rv policy for binder?
++patch bind__ChunkIterator: &_ChunkIterator<ELEM_ITERATOR, RANGE_SET>::next, "None");-->&_ChunkIterator<ELEM_ITERATOR, RANGE_SET>::next, "None", py::return_value_policy::reference);
